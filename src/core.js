@@ -185,6 +185,13 @@
     return Array.from({ length: n + 1 }, (_, k) => tip(fourier, TWO_PI * k / n, count, S));
   }
 
+  // Where the on-video text sits, as fractions of the canvas height. Vertical (9:16) videos keep
+  // the text inside the TikTok / Reels / Shorts safe zone: the top ~8% holds the app's tabs and the
+  // bottom ~20% is covered by the caption and username, so text there would be hidden.
+  function overlayLayout(w, h) {
+    return h > w ? { titleTop: 0.1, countBottom: 0.78 } : { titleTop: 0.06, countBottom: 0.94 };
+  }
+
   function heartPoints() {
     return Array.from({ length: 400 }, (_, i) => {
       const a = (i / 400) * TWO_PI;
@@ -195,6 +202,6 @@
   return {
     TWO_PI, SIZES, MAX_EDGE_POINTS, MAX_POINTS, BUILD_UP_LEVELS, TRACE_SIZE,
     evenlySample, nearestNeighborOrder, orderPieces, inkPoints, normalize, dft, fourierSeries,
-    chain, tip, buildLevels, planTimeline, frameInfo, cycleTrail, heartPoints,
+    chain, tip, buildLevels, planTimeline, frameInfo, cycleTrail, overlayLayout, heartPoints,
   };
 });

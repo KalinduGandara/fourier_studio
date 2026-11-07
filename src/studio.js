@@ -211,6 +211,7 @@
         function drawOverlay(count) {
           const size = Math.min(p.width, p.height) * 0.06;
           const title = String(cfg.title || '').trim();
+          const layout = Core.overlayLayout(p.width, p.height);
           p.noStroke();
           p.fill(255);
           p.textStyle(p.BOLD);
@@ -219,12 +220,12 @@
           if (title) {
             p.textSize(size);
             p.textAlign(p.CENTER, p.TOP);
-            p.text(title, p.width * 0.06, p.height * 0.06, p.width * 0.88);
+            p.text(title, p.width * 0.06, p.height * layout.titleTop, p.width * 0.88);
           }
           if (cfg.showCount) {
             p.textSize(size * 0.9);
             p.textAlign(p.CENTER, p.BOTTOM);
-            p.text(`${count} circle${count === 1 ? '' : 's'}`, p.width / 2, p.height * 0.94);
+            p.text(`${count} circle${count === 1 ? '' : 's'}`, p.width / 2, p.height * layout.countBottom);
           }
           p.drawingContext.shadowBlur = 0;
         }

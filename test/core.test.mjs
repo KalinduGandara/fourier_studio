@@ -114,3 +114,11 @@ test('cycleTrail spans one full loop', () => {
   close(trail[0].x, trail[trail.length - 1].x, 1e-9);
   close(trail[0].y, trail[trail.length - 1].y, 1e-9);
 });
+
+test('overlayLayout keeps vertical-video text out of the app UI zones', () => {
+  const v = Core.overlayLayout(1080, 1920);
+  assert.ok(v.titleTop >= 0.08, 'title clears the top tab bar');
+  assert.ok(v.countBottom <= 0.8, 'count clears the bottom caption area');
+  const h = Core.overlayLayout(1920, 1080);
+  assert.ok(h.titleTop < v.titleTop && h.countBottom > v.countBottom);
+});
