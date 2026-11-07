@@ -60,7 +60,7 @@ node cli/render.mjs --image samples/butterfly.svg --duration 8 --zoom 2 --rainbo
 | `--title TEXT`, `--no-count` | | text drawn on the video |
 | `--fps N` | 60 | |
 | `--no-sound` | | leave out the procedural soundtrack (the video then has a silent track unless `--music` is given) |
-| `--music FILE`, `--music-volume V` | 0.35 | music under the soundtrack. It is ducked, looped or trimmed to fit, and fades out at the end. |
+| `--music FILE`, `--music-volume V` | 0.35 (1 with `--no-sound`) | music under the soundtrack. It is ducked, looped or trimmed to fit, and fades out at the end. |
 | `--seed N` | 1 | seed for the soundtrack's noise |
 | `--out PATH` | `out/<image name>.mp4` | |
 | `--subject`, `--post-title`, `--post-description`, `--hashtags "a,b"` | | override the generated post metadata |

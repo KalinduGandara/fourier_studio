@@ -40,7 +40,7 @@ Animation
 Sound
   --no-sound            no procedural soundtrack (silent track unless --music)
   --music FILE          music mixed under the soundtrack (ducked), looped/trimmed to length
-  --music-volume V      music gain (default 0.35)
+  --music-volume V      music gain (default 0.35, or 1 with --no-sound)
   --seed N              noise seed for the soundtrack (default 1)
 Export
   --out PATH            output .mp4 (default out/<input name>.mp4)
@@ -59,7 +59,7 @@ const OPTIONS = {
   'build-up': { type: 'boolean', default: false }, circles: { type: 'string' }, zoom: { type: 'string', default: '1' },
   color: { type: 'string', default: '#ff3366' }, rainbow: { type: 'boolean', default: false },
   title: { type: 'string', default: '' }, 'no-count': { type: 'boolean', default: false }, fps: { type: 'string', default: '60' },
-  'no-sound': { type: 'boolean', default: false }, music: { type: 'string' }, 'music-volume': { type: 'string', default: '0.35' },
+  'no-sound': { type: 'boolean', default: false }, music: { type: 'string' }, 'music-volume': { type: 'string' },
   seed: { type: 'string', default: '1' }, out: { type: 'string' }, subject: { type: 'string' },
   'post-title': { type: 'string' }, 'post-description': { type: 'string' }, hashtags: { type: 'string' },
   crf: { type: 'string', default: '18' }, chrome: { type: 'string' }, help: { type: 'boolean', short: 'h', default: false },
@@ -121,9 +121,11 @@ async function main() {
   const fps = numberOpt(values, 'fps', 1, 120);
   const duration = numberOpt(values, 'duration', 0.5, 600);
   const threshold = numberOpt(values, 'threshold', 0, 255);
-  const musicVolume = numberOpt(values, 'music-volume', 0, 4);
   const seed = Math.round(numberOpt(values, 'seed', 0, 2 ** 31));
   const sound = !values['no-sound'];
+  // Music sits under the soundtrack by default, or plays at full level when it is the only audio.
+  values['music-volume'] ??= sound ? '0.35' : '1';
+  const musicVolume = numberOpt(values, 'music-volume', 0, 4);
   const image = values.image ? resolve(values.image) : null;
   if (image && !existsSync(image)) fail(`image not found: ${image}`);
   const music = values.music ? resolve(values.music) : null;
