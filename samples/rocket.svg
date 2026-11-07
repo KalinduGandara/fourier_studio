@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Rocket line art (original, CC0) -->
+  <path d="M100 20 Q140 60 135 150 L65 150 Q60 60 100 20 Z"/>
+  <circle cx="100" cy="85" r="16"/>
+  <path d="M68 115 L40 160 L40 178 L66 158"/>
+  <path d="M132 115 L160 160 L160 178 L134 158"/>
+  <path d="M100 150 L100 180"/>
+  <path d="M78 155 Q72 190 88 215 Q92 196 100 222 Q108 196 112 215 Q128 190 122 155"/>
+</svg>

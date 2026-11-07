@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Butterfly line art (original, CC0) -->
+  <path d="M110 70 Q80 10 30 25 Q0 40 25 85 Q40 105 105 100"/>
+  <path d="M110 70 Q140 10 190 25 Q220 40 195 85 Q180 105 115 100"/>
+  <path d="M105 105 Q50 110 45 150 Q50 185 95 160 Q105 145 108 115"/>
+  <path d="M115 105 Q170 110 175 150 Q170 185 125 160 Q115 145 112 115"/>
+  <path d="M110 60 Q102 62 103 90 Q104 140 110 165 Q116 140 117 90 Q118 62 110 60 Z"/>
+  <path d="M107 62 Q98 40 85 32"/>
+  <path d="M113 62 Q122 40 135 32"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Cat face line art (original, CC0) -->
+  <path d="M50 82 L44 24 L84 54 Q100 49 116 54 L156 24 L150 82 Q170 116 150 150 Q127 180 100 180 Q73 180 50 150 Q30 116 50 82 Z"/>
+  <ellipse cx="78" cy="102" rx="9" ry="12"/>
+  <ellipse cx="122" cy="102" rx="9" ry="12"/>
+  <path d="M93 126 L107 126 L100 134 Z"/>
+  <path d="M100 134 Q100 146 87 147"/>
+  <path d="M100 134 Q100 146 113 147"/>
+  <polyline points="64,132 22,122 64,132 22,144 64,132"/>
+  <polyline points="136,132 178,122 136,132 178,144 136,132"/>
+</svg>
