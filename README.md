@@ -4,7 +4,7 @@ Spinning circles (epicycles) that draw a picture: a Fourier series of the pictur
 
 - **Interactive page** (`index.html`): drop in an image, tweak it, preview it with sound, and record it in the browser.
 - **Headless CLI** (`cli/render.mjs`): renders a reproducible MP4 with a procedural soundtrack, and writes the
-  thumbnail and post metadata needed to publish it (the "export pack").
+  thumbnail and post metadata you need to upload it by hand (the "export pack").
 
 Both use the same sketch (`src/studio.js`), so what you preview is what the CLI renders.
 
@@ -104,7 +104,11 @@ Every render writes these files next to each other (this is the shared contract 
 | `<stem>.json` | render metadata: input, all params, seed, circles, levels, frames, `duration_s` |
 
 The default post title is "Drawing a/an `<subject>` with `<N>` circles". The subject comes from `--subject` or the
-file name. YouTube defaults to `privacy: "private"`, category 27 (Education), and `made_for_kids: false`.
+file name. YouTube defaults to category 27 (Education) and `made_for_kids: false` (the `privacy` field is informational:
+you choose visibility when uploading).
+
+Uploads are manual. `release pack out/<stem>.mp4` (the `../release` tool) turns the pack into a review folder with an
+`UPLOAD.md` checklist: text to paste per platform, settings and a suggested upload time.
 
 ## Samples
 
