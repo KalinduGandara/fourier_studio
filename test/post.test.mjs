@@ -15,7 +15,10 @@ test('default post follows the export-pack contract', () => {
   const post = buildPost({ subject: 'owl', circles: 500, format: '9:16', buildUp: true, levels: [2, 10, 500] });
   assert.equal(post.title, 'Drawing an owl with 500 circles');
   assert.ok(post.description.includes('from 2 to 500'));
-  assert.ok(post.hashtags.includes('shorts'));
+  assert.ok(!post.hashtags.includes('shorts'));
+  assert.ok(post.platforms.youtube.tags.includes('shorts'));
+  assert.ok(!post.platforms.tiktok.caption.includes('#shorts'));
+  assert.ok(!post.platforms.instagram.caption.includes('#shorts'));
   assert.ok(post.hashtags.every(h => !h.startsWith('#')));
   const yt = post.platforms.youtube;
   assert.equal(yt.privacy, 'private');
@@ -31,5 +34,5 @@ test('overrides win and titles are clipped to 100 chars', () => {
   assert.equal(post.description, 'Hi');
   assert.deepEqual(post.hashtags, ['a', 'b']);
   assert.equal(buildPost({ subject: 'my dog', circles: 3 }).title, 'Drawing my dog with 3 circles');
-  assert.ok(!buildPost({ subject: 'cat', circles: 3, format: '16:9' }).hashtags.includes('shorts'));
+  assert.ok(!buildPost({ subject: 'cat', circles: 3, format: '16:9' }).platforms.youtube.tags.includes('shorts'));
 });
