@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<!-- Headless render target for cli/render.mjs. No UI: the CLI drives window.studio frame by frame. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fourier Circle Studio — headless</title>
+  <script src="vendor/p5.min.js"></script>
+  <script src="src/core.js"></script>
+  <script src="src/studio.js"></script>
+  <style>body { margin: 0; background: #0b0b0f; }</style>
+</head>
+<body>
+  <script>
+    FourierStudio.create({ playing: false }).then(s => { window.studio = s; });
+  </script>
+</body>
+</html>

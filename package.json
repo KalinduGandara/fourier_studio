@@ -1,0 +1,22 @@
+{
+  "name": "fourier-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fourier epicycle drawing videos: interactive p5.js studio + deterministic headless renderer with procedural sound",
+  "scripts": {
+    "render": "node cli/render.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:unit": "node --test test/core.test.mjs test/audio.test.mjs test/post.test.mjs",
+    "vendor": "node -e \"require('fs').copyFileSync(require.resolve('p5/lib/p5.min.js'),'vendor/p5.min.js')\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^25.16.0"
+  },
+  "devDependencies": {
+    "p5": "^1.11.13"
+  }
+}
