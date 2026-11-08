@@ -15,7 +15,7 @@
   const DEFAULTS = {
     format: '9:16', fps: 60, duration: 10, hold: 1.5, finalHold: 2.5,
     buildUp: false, circles: Infinity, zoom: 1, color: '#ff3366', rainbow: false,
-    title: '', showCount: true, background: 11,
+    title: '', tag: '', showCount: true, background: 11,
     levels: null,   // custom circle counts per pass, e.g. [2, 5, 10, 20, 1e9]
     guess: '',      // guess mode: prompt shown on every pass until the final drawing is done
     reveal: '',     // guess mode: answer shown on the final hold
@@ -222,10 +222,19 @@
           p.textStyle(p.BOLD);
           p.drawingContext.shadowColor = 'rgba(0,0,0,0.85)';
           p.drawingContext.shadowBlur = 14;
+          // series tag (small, muted) sits on the title line; the title and answer move below it
+          const top = p.height * layout.titleTop + (cfg.tag ? size * 0.95 : 0);
+          if (cfg.tag) {
+            p.fill('#9a9ab0');
+            p.textSize(size * 0.55);
+            p.textAlign(p.CENTER, p.TOP);
+            p.text(String(cfg.tag).toUpperCase(), p.width / 2, p.height * layout.titleTop);
+            p.fill(255);
+          }
           if (title) {
             p.textSize(size);
             p.textAlign(p.CENTER, p.TOP);
-            p.text(title, p.width * 0.06, p.height * layout.titleTop, p.width * 0.88);
+            p.text(title, p.width * 0.06, top, p.width * 0.88);
           }
           if (revealing) {
             // answer pops in over a quarter second (frame-based, fps-normalized)
@@ -234,7 +243,7 @@
             p.fill('#ffd43b');
             p.textSize(size * 1.5 * pop);
             p.textAlign(p.CENTER, p.TOP);
-            p.text(String(cfg.reveal), p.width * 0.04, p.height * layout.titleTop, p.width * 0.92);
+            p.text(String(cfg.reveal), p.width * 0.04, top, p.width * 0.92);
             p.fill(255);
           }
           if (cfg.showCount) {

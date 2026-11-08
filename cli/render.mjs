@@ -38,6 +38,7 @@ Animation
   --color HEX           trail color (default #ff3366)
   --rainbow             rainbow trail
   --title TEXT          title drawn on the video
+  --tag TEXT            small series line above the title (e.g. "Guess the Shape · #1")
   --no-count            hide the "N circles" caption
   --fps N               frames per second (default 60)
 Sound
@@ -62,7 +63,7 @@ const OPTIONS = {
   'build-up': { type: 'boolean', default: false }, levels: { type: 'string' }, guess: { type: 'string', default: '' },
   reveal: { type: 'string', default: '' }, circles: { type: 'string' }, zoom: { type: 'string', default: '1' },
   color: { type: 'string', default: '#ff3366' }, rainbow: { type: 'boolean', default: false },
-  title: { type: 'string', default: '' }, 'no-count': { type: 'boolean', default: false }, fps: { type: 'string', default: '60' },
+  title: { type: 'string', default: '' }, tag: { type: 'string', default: '' }, 'no-count': { type: 'boolean', default: false }, fps: { type: 'string', default: '60' },
   'no-sound': { type: 'boolean', default: false }, music: { type: 'string' }, 'music-volume': { type: 'string' },
   seed: { type: 'string', default: '1' }, out: { type: 'string' }, subject: { type: 'string' },
   'post-title': { type: 'string' }, 'post-description': { type: 'string' }, hashtags: { type: 'string' },
@@ -153,7 +154,7 @@ async function main() {
     hold: numberOpt(values, 'hold', 0, 60), finalHold: numberOpt(values, 'final-hold', 0, 60),
     buildUp: values['build-up'], circles: values.circles ? numberOpt(values, 'circles', 1, 1e6) : Infinity,
     zoom: numberOpt(values, 'zoom', 1, 20), color: values.color, rainbow: values.rainbow,
-    title: values.title, showCount: !values['no-count'],
+    title: values.title, tag: values.tag, showCount: !values['no-count'],
     levels: values.levels ? parseLevels(values.levels) : null, guess: values.guess, reveal: values.reveal,
   };
 
