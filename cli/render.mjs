@@ -217,8 +217,10 @@ async function main() {
 
     // Export pack: the finished drawing is the last frame (epicycles faded out).
     writeFileSync(`${stem}_thumb.png`, last);
+    // Name the circles actually drawn (--circles 300 of 999 -> 300), not every coefficient.
     const post = buildPost({
-      subject: values.subject || (image ? subjectFromPath(image) : 'heart'), circles, format, buildUp: config.buildUp, levels,
+      subject: values.subject || (image ? subjectFromPath(image) : 'heart'), circles: Math.max(...levels), format,
+      buildUp: config.buildUp, levels,
       title: values['post-title'], description: values['post-description'], hashtags: values.hashtags,
     });
     writeFileSync(`${stem}_post.json`, `${JSON.stringify(post, null, 2)}\n`);
