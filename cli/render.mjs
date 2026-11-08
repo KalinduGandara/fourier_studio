@@ -30,6 +30,9 @@ Animation
   --hold S              pause on each finished drawing (default 1.5)
   --final-hold S        pause on the last finished drawing (default 2.5)
   --build-up            redraw with 2 -> 10 -> 50 -> 200 -> all circles
+  --levels LIST         custom circle counts per pass, e.g. 2,5,10,20,50,all (overrides --build-up)
+  --guess TEXT          guess mode: prompt on every pass; thumbnail from an early pass (no spoiler)
+  --reveal TEXT         guess mode: answer shown after the final drawing
   --circles N           circles to use without --build-up (default all)
   --zoom Z              follow-the-pen zoom, 1 = off (default 1)
   --color HEX           trail color (default #ff3366)
@@ -56,7 +59,8 @@ const OPTIONS = {
   image: { type: 'string' }, threshold: { type: 'string', default: '128' }, invert: { type: 'boolean', default: false },
   format: { type: 'string', default: '9:16' }, duration: { type: 'string', default: '10' },
   hold: { type: 'string', default: '1.5' }, 'final-hold': { type: 'string', default: '2.5' },
-  'build-up': { type: 'boolean', default: false }, circles: { type: 'string' }, zoom: { type: 'string', default: '1' },
+  'build-up': { type: 'boolean', default: false }, levels: { type: 'string' }, guess: { type: 'string', default: '' },
+  reveal: { type: 'string', default: '' }, circles: { type: 'string' }, zoom: { type: 'string', default: '1' },
   color: { type: 'string', default: '#ff3366' }, rainbow: { type: 'boolean', default: false },
   title: { type: 'string', default: '' }, 'no-count': { type: 'boolean', default: false }, fps: { type: 'string', default: '60' },
   'no-sound': { type: 'boolean', default: false }, music: { type: 'string' }, 'music-volume': { type: 'string' },
@@ -112,6 +116,14 @@ function audioFilter({ sound, music, musicVolume, seconds }) {
   return null;
 }
 
+// "2,5,10,all" -> [2, 5, 10, 1e9] ("all" = every circle; JSON-safe instead of Infinity).
+export function parseLevels(text) {
+  const levels = String(text).split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+    .map(s => (s === 'all' ? 1e9 : Number(s)));
+  if (!levels.length || levels.some(n => !Number.isFinite(n) || n < 1)) fail(`--levels must be numbers or "all", got "${text}"`);
+  return levels;
+}
+
 async function main() {
   const { values } = parseArgs({ options: OPTIONS, strict: true });
   if (values.help) { process.stdout.write(HELP); return; }
@@ -142,6 +154,7 @@ async function main() {
     buildUp: values['build-up'], circles: values.circles ? numberOpt(values, 'circles', 1, 1e6) : Infinity,
     zoom: numberOpt(values, 'zoom', 1, 20), color: values.color, rainbow: values.rainbow,
     title: values.title, showCount: !values['no-count'],
+    levels: values.levels ? parseLevels(values.levels) : null, guess: values.guess, reveal: values.reveal,
   };
 
   const t0 = Date.now();
@@ -199,10 +212,14 @@ async function main() {
     ff.stdin.on('error', () => {});   // ffmpeg died early: its exit code is reported below
 
     // Frames: deterministic stepping, one PNG per frame.
-    let last = null, nextReport = 0.1;
+    // Guess mode: the thumbnail is the second pass, finished and faded, so it doesn't spoil the answer.
+    const early = timeline.cycles[Math.min(1, timeline.cycles.length - 1)];
+    const thumbFrame = config.guess ? Math.min(total - 1, early.drawEnd + Math.round(fps * 0.5)) : total - 1;
+    let last = null, thumb = null, nextReport = 0.1;
     for (let i = 0; i < total; i++) {
       const b64 = await page.evaluate(() => { window.studio.renderFrame(); return window.studio.canvas.toDataURL('image/png').slice(22); });
       last = Buffer.from(b64, 'base64');
+      if (i === thumbFrame) thumb = last;
       if (ff.exitCode !== null) break;
       if (!ff.stdin.write(last)) await Promise.race([once(ff.stdin, 'drain'), ffDone]);
       if ((i + 1) / total >= nextReport) {
@@ -216,11 +233,11 @@ async function main() {
     if (code !== 0) fail(`ffmpeg exited with code ${code}`);
 
     // Export pack: the finished drawing is the last frame (epicycles faded out).
-    writeFileSync(`${stem}_thumb.png`, last);
+    writeFileSync(`${stem}_thumb.png`, thumb || last);
     // Name the circles actually drawn (--circles 300 of 999 -> 300), not every coefficient.
     const post = buildPost({
       subject: values.subject || (image ? subjectFromPath(image) : 'heart'), circles: Math.max(...levels), format,
-      buildUp: config.buildUp, levels,
+      buildUp: config.buildUp, levels, guess: Boolean(config.guess),
       title: values['post-title'], description: values['post-description'], hashtags: values.hashtags,
     });
     writeFileSync(`${stem}_post.json`, `${JSON.stringify(post, null, 2)}\n`);

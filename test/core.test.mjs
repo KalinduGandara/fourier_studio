@@ -80,6 +80,11 @@ test('inkPoints finds the outline of a dark square and honours invert', () => {
   assert.equal(Core.inkPoints(px, w, h, { invert: true }).length, 76 + 40);
 });
 
+test('buildLevels: custom levels are clamped, de-duplicated and sorted', () => {
+  assert.deepEqual(Core.buildLevels(30, true, 30, [2, 5, 10, 20, 50, 1e9]), [2, 5, 10, 20, 30]);
+  assert.deepEqual(Core.buildLevels(400, false, 400, [10, 2, 10]), [2, 10]);
+});
+
 test('buildLevels: single level or the build-up ladder', () => {
   assert.deepEqual(Core.buildLevels(400, false), [400]);
   assert.deepEqual(Core.buildLevels(400, false, 30), [30]);

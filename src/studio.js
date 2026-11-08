@@ -16,6 +16,9 @@
     format: '9:16', fps: 60, duration: 10, hold: 1.5, finalHold: 2.5,
     buildUp: false, circles: Infinity, zoom: 1, color: '#ff3366', rainbow: false,
     title: '', showCount: true, background: 11,
+    levels: null,   // custom circle counts per pass, e.g. [2, 5, 10, 20, 1e9]
+    guess: '',      // guess mode: prompt shown on every pass until the final drawing is done
+    reveal: '',     // guess mode: answer shown on the final hold
   };
 
   function create({ container, playing = false, onEvent = () => {} } = {}) {
@@ -47,12 +50,12 @@
         // ---------- configuration & input ----------
 
         function configure(opts = {}) {
-          const before = JSON.stringify([cfg.format, cfg.fps, cfg.duration, cfg.hold, cfg.finalHold, cfg.buildUp, cfg.circles]);
+          const before = JSON.stringify([cfg.format, cfg.fps, cfg.duration, cfg.hold, cfg.finalHold, cfg.buildUp, cfg.circles, cfg.levels]);
           const [w, h] = Core.SIZES[opts.format || cfg.format];
           Object.assign(cfg, opts);
           if (cnv && (w !== p.width || h !== p.height)) p.resizeCanvas(w, h);
           if (opts.fps) p.frameRate(cfg.fps);
-          const after = JSON.stringify([cfg.format, cfg.fps, cfg.duration, cfg.hold, cfg.finalHold, cfg.buildUp, cfg.circles]);
+          const after = JSON.stringify([cfg.format, cfg.fps, cfg.duration, cfg.hold, cfg.finalHold, cfg.buildUp, cfg.circles, cfg.levels]);
           if (before !== after && fourier.length) rebuild();
           return api;
         }
@@ -64,7 +67,7 @@
         }
 
         function rebuild() {
-          levels = Core.buildLevels(fourier.length, cfg.buildUp, cfg.circles);
+          levels = Core.buildLevels(fourier.length, cfg.buildUp, cfg.circles, cfg.levels);
           timeline = Core.planTimeline({ fps: cfg.fps, duration: cfg.duration, hold: cfg.hold, finalHold: cfg.finalHold, levels, points: fourier.length });
           reset();
         }
@@ -168,7 +171,7 @@
           if (circleAlpha > 0) drawEpicycles(joints, circleAlpha, cam.z);
           p.pop();
 
-          drawOverlay(count);
+          drawOverlay(info);
         }
 
         function drawEpicycles(pts, alpha, z) {
@@ -208,9 +211,11 @@
           }
         }
 
-        function drawOverlay(count) {
+        function drawOverlay(info) {
+          const count = info.cycle.count;
           const size = Math.min(p.width, p.height) * 0.06;
-          const title = String(cfg.title || '').trim();
+          const revealing = Boolean(cfg.reveal) && info.cycle.last && info.phase === 'hold';
+          const title = revealing ? '' : String(cfg.guess || cfg.title || '').trim();
           const layout = Core.overlayLayout(p.width, p.height);
           p.noStroke();
           p.fill(255);
@@ -222,10 +227,21 @@
             p.textAlign(p.CENTER, p.TOP);
             p.text(title, p.width * 0.06, p.height * layout.titleTop, p.width * 0.88);
           }
+          if (revealing) {
+            // answer pops in over a quarter second (frame-based, fps-normalized)
+            const k = Math.min(1, info.holdFrame / (cfg.fps * 0.25));
+            const pop = 0.6 + 0.4 * (1 + 2.70158 * (k - 1) ** 3 + 1.70158 * (k - 1) ** 2);   // ease-out-back
+            p.fill('#ffd43b');
+            p.textSize(size * 1.5 * pop);
+            p.textAlign(p.CENTER, p.TOP);
+            p.text(String(cfg.reveal), p.width * 0.04, p.height * layout.titleTop, p.width * 0.92);
+            p.fill(255);
+          }
           if (cfg.showCount) {
+            const guessing = cfg.guess && !info.cycle.last && info.phase === 'hold';
             p.textSize(size * 0.9);
             p.textAlign(p.CENTER, p.BOTTOM);
-            p.text(`${count} circle${count === 1 ? '' : 's'}`, p.width / 2, p.height * layout.countBottom);
+            p.text(`${count} circle${count === 1 ? '' : 's'}${guessing ? ' · guess?' : ''}`, p.width / 2, p.height * layout.countBottom);
           }
           p.drawingContext.shadowBlur = 0;
         }

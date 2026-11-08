@@ -144,8 +144,12 @@
     return { x: x * S, y: y * S };
   }
 
-  // Circle counts per drawing cycle.
-  function buildLevels(total, buildUp, circles = total) {
+  // Circle counts per drawing cycle. `custom` (e.g. [2, 5, 10, 1e9]) overrides both modes;
+  // counts are clamped to the available circles, de-duplicated and sorted.
+  function buildLevels(total, buildUp, circles = total, custom = null) {
+    if (custom && custom.length) {
+      return [...new Set(custom.map(n => Math.max(1, Math.min(total, Math.round(n)))))].sort((a, b) => a - b);
+    }
     if (!buildUp) return [Math.max(1, Math.min(total, Math.round(circles)))];
     return BUILD_UP_LEVELS.filter(n => n < total).concat(total);
   }

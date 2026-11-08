@@ -54,6 +54,8 @@ node cli/render.mjs --image samples/butterfly.svg --duration 8 --zoom 2 --rainbo
 | `--duration S` | 10 | seconds per drawing |
 | `--hold S`, `--final-hold S` | 1.5, 2.5 | pause on each finished drawing, and on the last one |
 | `--build-up` | off | redraw with 2 → 10 → 50 → 200 → all circles |
+| `--levels LIST` | | custom circle counts per pass, e.g. `2,5,10,20,50,all` (overrides `--build-up`) |
+| `--guess TEXT`, `--reveal TEXT` | | guess mode: the prompt shows on every pass, the answer appears after the last drawing, the thumbnail comes from the second pass, and the post never names the subject |
 | `--circles N` | all | how many circles to use (without `--build-up`) |
 | `--zoom Z` | 1 | how far the camera zooms in to follow the pen |
 | `--color HEX`, `--rainbow` | `#ff3366` | trail color |
@@ -113,7 +115,8 @@ Uploads are manual. `release pack out/<stem>.mp4` (the `../release` tool) turns 
 ## Samples
 
 `samples/` holds original line-art drawings (CC0) for testing and demos: `cat.svg`, `rocket.svg`, `star.svg`,
-`butterfly.svg` and `notes.png` (a bitmap, to test tracing). The best results come from a drawing with a single
+`butterfly.svg`, the single-outline silhouettes `fish.svg` and `cat-head.svg` (best for guess videos), and
+`notes.png` (a bitmap, to test tracing). The best results come from a drawing with a single
 continuous outline. A drawing made of separate parts gets straight lines joining those parts.
 
 ## Layout

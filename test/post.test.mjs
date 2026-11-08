@@ -36,3 +36,11 @@ test('overrides win and titles are clipped to 100 chars', () => {
   assert.equal(buildPost({ subject: 'my dog', circles: 3 }).title, 'Drawing my dog with 3 circles');
   assert.ok(!buildPost({ subject: 'cat', circles: 3, format: '16:9' }).platforms.youtube.tags.includes('shorts'));
 });
+
+test('guess mode never names the subject and asks how many circles were needed', () => {
+  const p = buildPost({ subject: 'fish', circles: 1000, levels: [2, 5, 10, 1000], guess: true });
+  assert.ok(!JSON.stringify(p).toLowerCase().includes('fish'));
+  assert.match(p.title, /^Guess the shape: 2 circles… 5 circles… 10…$/);
+  assert.match(p.pinned_comment, /How many circles/);
+  assert.ok(p.hashtags.length >= 3 && p.hashtags.length <= 6);
+});
